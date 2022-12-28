@@ -24,8 +24,8 @@ $(function () {
             success: function (result) {
 
                 predicted_emotion = result.data.predicted_emotion
-                emotion_img_url=result.data.predicted_emotion_img_url
-                
+                emotion_img_url = result.data.predicted_emotion_img_url
+
                 //Envie a emoção prevista e a URL da imagem para o HTML
                 $("#prediction").html(predicted_emotion)
                 $("#emo_img_url").attr('src', emotion_img_url);
@@ -34,7 +34,7 @@ $(function () {
                 $('#prediction').css("display", "");
                 $('#emo_img_url').css("display", "");
 
-               //Habilite o botão Salvar
+                //Habilite o botão Salvar
                 $('#save_button').prop('disabled', false);
             },
             error: function (result) {
@@ -83,9 +83,9 @@ function askBot() {
         var user_bot_input_text = $("#bot_input_text").val()
 
         if (user_bot_input_text != "") {
-           
+
             $("#chat_messages").append('<div class="user__messages">' + user_bot_input_text + ' </div>')
-            
+
             //Limpe a caixa de entrada de texto após enviar a mensagem
             $("#bot_input_text").val('');
 
@@ -94,16 +94,33 @@ function askBot() {
             }
             //Escreva a chamada AJAX aqui
             $.ajax({
+                type: 'POST',
+                url: "/bot-response",
+                data: JSON.stringify(chat_input_data),
+                dataType: "json",
+                contentType: 'application/json',
+                success: function (result) {
 
+                    $("#chat_messages").append('<div class="bot__messages">' + result.bot_response + ' </div>')
+                    $(".chatbox__messages__cotainer").animate({
+                        scrollTop: $(".chatbox__messages__cotainer")[0].scrollHeight
+                    }, 1000)
+
+                },
+                error: function (result) {
+                    alert(result.responseJSON.message)
+                }
 
             });
 
         }
 
     })
-   
-      //Envie uma mensagem se a tecla Enter (código de tecla 13) for pressionada 
-        
+
+    //Envie uma mensagem se a tecla Enter (código de tecla 13) for pressionada 
+    $("#bot_input_text").keypress(function(e){
+        if(e.which == 13){
+            $("#send_button").click()
         }
-    });
+    })
 }

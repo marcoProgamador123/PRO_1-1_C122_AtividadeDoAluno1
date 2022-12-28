@@ -59,14 +59,16 @@ def save_entry():
     return jsonify("Success")
 
 #Escreva a API aqui
-
-
+@app.route("/bot-response", methods=["POST"])
+def bot() :
+       
     # Obtenha a entrada do usuário
-    
+    input_text = request.json.get("user_bot_input_text")
    
     # Chame o método para obter a resposta do robô
-    
-
+    bot_res = bot_response(input_text)
+    response = {"bot_response":bot_res}
+    return jsonify(response)
     
 if __name__ == '__main__':
     app.run(debug=True)
